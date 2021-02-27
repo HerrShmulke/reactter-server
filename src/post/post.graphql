@@ -1,0 +1,17 @@
+type Query {
+  posts: [Post!]
+  post(id: ID!): Post
+}
+
+type Mutation {
+  createPost(createPostInput: CreatePostInput): Boolean
+}
+
+type Post {
+  id: ID!
+  message: String!
+}
+
+input CreatePostInput {
+  message: String!
+}
