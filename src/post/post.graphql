@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-  createPost(createPostInput: CreatePostInput): Boolean
+  createPost(postCreateInput: PostCreateInput): Boolean
 }
 
 type Post {
@@ -12,6 +12,6 @@ type Post {
   message: String!
 }
 
-input CreatePostInput {
+input PostCreateInput {
   message: String!
 }

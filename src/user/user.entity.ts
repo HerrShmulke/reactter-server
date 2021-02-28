@@ -1,3 +1,4 @@
+import * as argon2 from 'argon2';
 import { Post } from 'src/post/post.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -12,6 +13,14 @@ export class User {
   @OneToMany((type) => Post, (post) => post.id)
   ownedPosts: Post[];
 
-  @Column()
-  avatarUrl: string;
+  @Column({ name: 'password' })
+  private _password: string;
+
+  async setPassword(pass: string) {
+    this._password = await argon2.hash(pass);
+  }
+
+  async getPassword(): Promise<string> {
+    return this._password;
+  }
 }

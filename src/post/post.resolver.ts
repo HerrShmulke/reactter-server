@@ -1,7 +1,6 @@
 import { ParseIntPipe } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { InsertResult } from 'typeorm';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostCreateInput } from 'src/graphql';
 import { Post } from './post.entity';
 import { PostService } from './post.service';
 
@@ -20,7 +19,9 @@ export class PostResolver {
   }
 
   @Mutation('createPost')
-  async create(@Args('createPostInput') args: CreatePostDto): Promise<boolean> {
+  async create(
+    @Args('postCreateInput') args: PostCreateInput,
+  ): Promise<boolean> {
     try {
       await this.postService.create(args).then(console.log);
       return true;
