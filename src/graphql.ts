@@ -9,6 +9,7 @@
 export class PostCreateInput {
     message: string;
     ownerId: number;
+    mention?: number;
 }
 
 export class UserRegisterInput {
@@ -34,6 +35,8 @@ export class Post {
     id: string;
     message: string;
     owner: User;
+    mention?: Post;
+    mentionBy?: Post[];
 }
 
 export class User {

@@ -11,16 +11,23 @@ export class PostService {
   ) {}
 
   findAll(): Promise<Post[]> {
-    return this.postRepository.find({ relations: ['owner'] });
+    return this.postRepository.find({
+      relations: ['owner', 'mention', 'mentionBy'],
+    });
   }
 
   findById(id: number): Promise<Post> {
-    return this.postRepository.findOne(id, { relations: ['owner'] });
+    return this.postRepository.findOne(id, {
+      relations: ['owner', 'mention', 'mentionBy'],
+    });
   }
 
   async create(post: PostCreateInput): Promise<Post> {
     const newPost: Post = this.postRepository.create({
       message: post.message,
+      mention: {
+        id: post.mention,
+      },
       owner: {
         id: post.ownerId,
       },

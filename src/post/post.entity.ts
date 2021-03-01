@@ -5,17 +5,24 @@ import {
   JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ nullable: false })
-  message: string;
+  message!: string;
+
+  @ManyToOne((type) => Post, (post) => post.mentionBy)
+  mention?: Post;
+
+  @OneToMany((type) => Post, (post) => post.mention)
+  mentionBy?: Post[];
 
   @ManyToOne((type) => User, (user) => user.ownedPosts, { nullable: false })
   @JoinTable()
-  owner: User;
+  owner!: User;
 }
