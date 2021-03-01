@@ -28,6 +28,8 @@ export abstract class IQuery {
 export abstract class IMutation {
     abstract addPost(postAddInput?: PostAddInput): boolean | Promise<boolean>;
 
+    abstract addLike(postId: string, userId: string): boolean | Promise<boolean>;
+
     abstract registerUser(userRegisterInput?: UserRegisterInput): boolean | Promise<boolean>;
 }
 

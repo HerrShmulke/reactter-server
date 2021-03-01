@@ -20,7 +20,8 @@ export class UserResolver {
     try {
       await this.userService.create(args);
       return true;
-    } catch (e) {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   }

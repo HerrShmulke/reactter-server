@@ -20,12 +20,27 @@ export class PostResolver {
     return post;
   }
 
+  @Mutation('addLike')
+  async addLike(
+    @Args('postId', ParseIntPipe) postId: number,
+    @Args('userId', ParseIntPipe) userId: number,
+  ): Promise<boolean> {
+    try {
+      await this.postService.addLike(userId, postId);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   @Mutation('addPost')
   async add(@Args('postAddInput') args: PostAddInput): Promise<boolean> {
     try {
       await this.postService.add(args);
       return true;
-    } catch (e) {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   }

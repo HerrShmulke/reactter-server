@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 
 @Entity()
@@ -21,6 +22,9 @@ export class Post {
 
   @OneToMany((type) => Post, (post) => post.mention)
   mentionBy?: Post[];
+
+  @ManyToMany((type) => User, (user) => user.postsLikes)
+  usersLikes: User[];
 
   @ManyToOne((type) => User, (user) => user.ownedPosts, { nullable: false })
   @JoinTable()

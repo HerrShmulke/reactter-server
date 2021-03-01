@@ -11,13 +11,15 @@ export class UserService {
   ) {}
 
   findById(id: number): Promise<User> {
-    return this.userRepository.findOne(id, { relations: ['ownedPosts'] });
+    return this.userRepository.findOne(id, {
+      relations: ['ownedPosts', 'postsLikes'],
+    });
   }
 
   async create(user: UserRegisterInput): Promise<InsertResult> {
     const newUser = this.userRepository.create();
-
     newUser.name = user.name;
+
     await newUser.setPassword(user.password);
 
     return this.userRepository.insert(newUser);

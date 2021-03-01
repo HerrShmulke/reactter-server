@@ -5,6 +5,7 @@ import {
   Entity,
   JoinTable,
   OneToMany,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -19,6 +20,10 @@ export class User {
   @OneToMany((type) => Post, (post) => post.owner)
   @JoinTable()
   ownedPosts: Post[];
+
+  @ManyToMany((type) => Post)
+  @JoinTable()
+  postsLikes: Post[];
 
   @Column({ name: 'password', nullable: false })
   private _password: string;

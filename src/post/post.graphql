@@ -5,6 +5,7 @@ type Query {
 
 type Mutation {
   addPost(postAddInput: PostAddInput): Boolean
+  addLike(postId: ID!, userId: ID!): Boolean
 }
 
 type Post {
