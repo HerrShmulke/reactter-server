@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostCreateInput } from 'src/graphql';
-import { InsertResult, Repository } from 'typeorm';
+import { PostAddInput } from 'src/graphql';
+import { Repository } from 'typeorm';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class PostService {
     });
   }
 
-  async create(post: PostCreateInput): Promise<Post> {
+  async add(post: PostAddInput): Promise<Post> {
     const newPost: Post = this.postRepository.create({
       message: post.message,
       mention: {

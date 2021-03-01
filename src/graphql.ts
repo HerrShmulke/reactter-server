@@ -6,7 +6,7 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export class PostCreateInput {
+export class PostAddInput {
     message: string;
     ownerId: number;
     mention?: number;
@@ -26,7 +26,7 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract createPost(postCreateInput?: PostCreateInput): boolean | Promise<boolean>;
+    abstract addPost(postAddInput?: PostAddInput): boolean | Promise<boolean>;
 
     abstract registerUser(userRegisterInput?: UserRegisterInput): boolean | Promise<boolean>;
 }

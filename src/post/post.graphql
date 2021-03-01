@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-  createPost(postCreateInput: PostCreateInput): Boolean
+  addPost(postAddInput: PostAddInput): Boolean
 }
 
 type Post {
@@ -15,7 +15,7 @@ type Post {
   mentionBy: [Post]
 }
 
-input PostCreateInput {
+input PostAddInput {
   message: String!
   ownerId: Int!
   mention: Int
