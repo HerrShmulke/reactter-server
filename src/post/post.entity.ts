@@ -2,10 +2,9 @@ import { User } from 'src/user/user.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
-  JoinTable,
-  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -13,10 +12,10 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   message: string;
 
-  @ManyToOne((type) => User, (user) => user.ownedPosts, { eager: true })
-  @JoinColumn()
+  @ManyToOne((type) => User, (user) => user.ownedPosts, { nullable: false })
+  @JoinTable()
   owner: User;
 }

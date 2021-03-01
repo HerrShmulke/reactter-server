@@ -13,14 +13,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
   @OneToMany((type) => Post, (post) => post.owner)
   @JoinTable()
   ownedPosts: Post[];
 
-  @Column({ name: 'password' })
+  @Column({ name: 'password', nullable: false })
   private _password: string;
 
   async setPassword(pass: string) {

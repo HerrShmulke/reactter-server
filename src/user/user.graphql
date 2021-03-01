@@ -9,7 +9,7 @@ type Mutation {
 type User {
   id: ID!
   name: String!
-  avatarUrl: String
+  ownedPosts: [Post!]
 }
 
 input UserRegisterInput {

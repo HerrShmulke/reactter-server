@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
   findById(id: number): Promise<User> {
-    return this.userRepository.findOne(id);
+    return this.userRepository.findOne(id, { relations: ['ownedPosts'] });
   }
 
   async create(user: UserRegisterInput): Promise<InsertResult> {

@@ -27,7 +27,7 @@ export class PostResolver {
     try {
       await this.postService.create(args);
       return true;
-    } catch {
+    } catch (e) {
       return false;
     }
   }

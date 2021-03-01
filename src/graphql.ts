@@ -39,5 +39,5 @@ export class Post {
 export class User {
     id: string;
     name: string;
-    avatarUrl?: string;
+    ownedPosts?: Post[];
 }
