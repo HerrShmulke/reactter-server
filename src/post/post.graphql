@@ -10,8 +10,10 @@ type Mutation {
 type Post {
   id: ID!
   message: String!
+  owner: User!
 }
 
 input PostCreateInput {
   message: String!
+  ownerId: Int!
 }

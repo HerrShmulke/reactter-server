@@ -1,6 +1,12 @@
 import * as argon2 from 'argon2';
 import { Post } from 'src/post/post.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -10,7 +16,8 @@ export class User {
   @Column()
   name: string;
 
-  @OneToMany((type) => Post, (post) => post.id)
+  @OneToMany((type) => Post, (post) => post.owner)
+  @JoinTable()
   ownedPosts: Post[];
 
   @Column({ name: 'password' })

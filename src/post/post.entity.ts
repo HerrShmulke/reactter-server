@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinTable,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Post {
@@ -7,4 +15,8 @@ export class Post {
 
   @Column()
   message: string;
+
+  @ManyToOne((type) => User, (user) => user.ownedPosts, { eager: true })
+  @JoinColumn()
+  owner: User;
 }

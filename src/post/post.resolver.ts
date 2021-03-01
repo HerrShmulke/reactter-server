@@ -15,7 +15,9 @@ export class PostResolver {
 
   @Query('post')
   async getPostById(@Args('id', ParseIntPipe) id: number): Promise<Post> {
-    return this.postService.findById(id);
+    const post = this.postService.findById(id);
+
+    return post;
   }
 
   @Mutation('createPost')
@@ -23,7 +25,7 @@ export class PostResolver {
     @Args('postCreateInput') args: PostCreateInput,
   ): Promise<boolean> {
     try {
-      await this.postService.create(args).then(console.log);
+      await this.postService.create(args);
       return true;
     } catch {
       return false;

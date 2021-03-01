@@ -8,6 +8,7 @@
 /* eslint-disable */
 export class PostCreateInput {
     message: string;
+    ownerId: number;
 }
 
 export class UserRegisterInput {
@@ -32,6 +33,7 @@ export abstract class IMutation {
 export class Post {
     id: string;
     message: string;
+    owner: User;
 }
 
 export class User {

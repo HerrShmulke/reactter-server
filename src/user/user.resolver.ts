@@ -21,7 +21,6 @@ export class UserResolver {
       await this.userService.create(args);
       return true;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }

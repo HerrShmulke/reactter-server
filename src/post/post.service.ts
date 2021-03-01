@@ -18,10 +18,14 @@ export class PostService {
     return this.postRepository.findOne(id);
   }
 
-  async create(post: PostCreateInput): Promise<InsertResult> {
-    const newPost: Post = this.postRepository.create();
-    newPost.message = post.message;
+  async create(post: PostCreateInput): Promise<Post> {
+    const newPost: Post = this.postRepository.create({
+      message: post.message,
+      owner: {
+        id: post.ownerId,
+      },
+    });
 
-    return this.postRepository.insert(newPost);
+    return this.postRepository.save(newPost);
   }
 }
