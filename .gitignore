@@ -35,3 +35,6 @@ lerna-debug.log*
 
 # DB
 reactter.db
+
+# env
+*.env

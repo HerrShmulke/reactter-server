@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppService } from './app.service';
 import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -22,8 +24,10 @@ import { UserModule } from './user/user.module';
       database: 'reactter.db',
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
+    ConfigModule.forRoot(),
     UserModule,
     PostModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [AppService],
