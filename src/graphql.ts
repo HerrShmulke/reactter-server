@@ -31,6 +31,8 @@ export abstract class IMutation {
     abstract addLike(postId: string, userId: string): boolean | Promise<boolean>;
 
     abstract registerUser(userRegisterInput?: UserRegisterInput): boolean | Promise<boolean>;
+
+    abstract userLogin(name?: string, password?: string): boolean | Promise<boolean>;
 }
 
 export class Post {

@@ -17,6 +17,10 @@ import { UserModule } from './user/user.module';
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
+      cors: {
+        credentials: true,
+        origin: ['http://localhost:3000'],
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'sqlite',

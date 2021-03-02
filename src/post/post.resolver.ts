@@ -29,7 +29,6 @@ export class PostResolver {
       await this.postService.addLike(userId, postId);
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
@@ -40,7 +39,6 @@ export class PostResolver {
       await this.postService.add(args);
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
