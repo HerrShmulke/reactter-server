@@ -1,5 +1,6 @@
-import { ParseIntPipe } from '@nestjs/common';
+import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query, Mutation, Context } from '@nestjs/graphql';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRegisterInput } from 'src/graphql';
 import { User } from './user.entity';
@@ -12,6 +13,7 @@ export class UserResolver {
     private readonly authService: AuthService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Query('user')
   async getUser(@Args('id', ParseIntPipe) id: number): Promise<User> {
     return this.userService.findById(id);
@@ -23,9 +25,7 @@ export class UserResolver {
     @Args('name') name: string,
     @Args('password') password: string,
   ): Promise<boolean> {
-    context.req.res.cookie('test', 'test');
-
-    return this.authService.authorize(name, password);
+    return this.authService.authorize(name, password, context.req.res);
   }
 
   @Mutation('registerUser')
