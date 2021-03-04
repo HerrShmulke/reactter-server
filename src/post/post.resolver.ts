@@ -12,13 +12,23 @@ export class PostResolver {
   @UseGuards(AuthGuard)
   @Query('posts')
   async getPosts(): Promise<Post[]> {
-    return this.postService.findAll();
+    return this.postService.findAll([
+      'owner',
+      'mention',
+      'mentionBy',
+      'postsLikes',
+    ]);
   }
 
   @UseGuards(AuthGuard)
   @Query('post')
   async getPostById(@Args('id', ParseIntPipe) id: number): Promise<Post> {
-    const post = this.postService.findById(id);
+    const post = this.postService.findById(id, [
+      'owner',
+      'mention',
+      'mentionBy',
+      'postsLikes',
+    ]);
 
     return post;
   }

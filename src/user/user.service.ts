@@ -10,17 +10,18 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  findById(id: number): Promise<User> {
+  findById(id: number, relations: string[] = []): Promise<User> {
     return this.userRepository.findOne(id, {
-      relations: ['ownedPosts', 'postsLikes'],
+      relations: relations,
     });
   }
 
-  findByName(name: string): Promise<User> {
+  findByName(name: string, relations: string[] = []): Promise<User> {
     return this.userRepository.findOne({
       where: {
         name: name,
       },
+      relations: relations,
     });
   }
 

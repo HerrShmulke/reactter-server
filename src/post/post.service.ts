@@ -12,15 +12,15 @@ export class PostService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<Post[]> {
+  findAll(relations: string[] = []): Promise<Post[]> {
     return this.postRepository.find({
-      relations: ['owner', 'mention', 'mentionBy', 'postsLikes'],
+      relations: relations,
     });
   }
 
-  findById(id: number): Promise<Post> {
+  findById(id: number, relations: string[] = []): Promise<Post> {
     return this.postRepository.findOne(id, {
-      relations: ['owner', 'mention', 'mentionBy', 'postsLikes'],
+      relations: relations,
     });
   }
 

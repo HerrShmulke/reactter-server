@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
 
       if (tokens.accessToken === stringAccessToken) {
         const newTokens = await this.tokenService.replaceTokens(refreshToken);
-        console.log('In guard', newTokens);
+
         response.cookie('access_token', newTokens.accessToken, {
           maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
         });
