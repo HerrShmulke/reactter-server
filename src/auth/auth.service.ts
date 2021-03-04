@@ -1,17 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
-import { verify, sign } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import { IToken } from 'src/common/interfaces/token';
 import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
+  /**
+   * @todo replace repository to service
+   */
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
+
+  /**
+   * @todo add uuid4 library
+   */
+  async setRefreshToken(response: Response) {
+    /// uuid4
+    const token: string = undefined;
+
+    /// Temp time @todo fix
+    response.cookie('refresh_token', token, { maxAge: 999e10, httpOnly: true });
+  }
 
   async authorize(
     name: string,
