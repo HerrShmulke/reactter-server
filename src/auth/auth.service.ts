@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { verify, sign } from 'jsonwebtoken';
-import { Token } from 'src/common/interfaces/token';
+import { IToken } from 'src/common/interfaces/token';
 import * as argon2 from 'argon2';
 
 @Injectable()
@@ -13,17 +13,17 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async getUserFromToken(request: Request): Promise<User | null> {
+  async getUserFromToken(stringToken: string): Promise<User | undefined> {
     try {
-      const token: Token = verify(
-        request.cookies.token,
+      const token: IToken = verify(
+        stringToken,
         process.env.JWT_SECRET,
-      ) as Token;
+      ) as IToken;
       const user = await this.userRepository.findOne(token.id);
 
       return user;
     } catch {
-      return null;
+      return undefined;
     }
   }
 
@@ -40,12 +40,12 @@ export class AuthService {
       });
 
       if (user && (await argon2.verify(await user.getPassword(), password))) {
-        let token: Token = { id: user.id };
+        let token: IToken = { id: user.id };
 
         response.cookie(
           'token',
-          sign(token, process.env.JWT_SECRET, { expiresIn: '5m' }),
-          { maxAge: 300000 },
+          sign(token, process.env.JWT_SECRET, { expiresIn: '30m' }),
+          { maxAge: 1.8e6 },
         );
 
         return true;

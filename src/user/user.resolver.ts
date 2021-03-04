@@ -1,10 +1,12 @@
 import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query, Mutation, Context } from '@nestjs/graphql';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRegisterInput } from 'src/graphql';
 import { User } from './user.entity';
+import { Token } from './token.decorator';
+import { IToken } from '../common/interfaces/token';
 import { UserService } from './user.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Resolver('User')
 export class UserResolver {

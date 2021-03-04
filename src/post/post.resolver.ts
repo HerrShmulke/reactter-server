@@ -1,5 +1,6 @@
-import { ParseIntPipe } from '@nestjs/common';
+import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { PostAddInput } from 'src/graphql';
 import { Post } from './post.entity';
 import { PostService } from './post.service';
@@ -8,11 +9,13 @@ import { PostService } from './post.service';
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(AuthGuard)
   @Query('posts')
   async getPosts(): Promise<Post[]> {
     return this.postService.findAll();
   }
 
+  @UseGuards(AuthGuard)
   @Query('post')
   async getPostById(@Args('id', ParseIntPipe) id: number): Promise<Post> {
     const post = this.postService.findById(id);
@@ -20,6 +23,7 @@ export class PostResolver {
     return post;
   }
 
+  @UseGuards(AuthGuard)
   @Mutation('addLike')
   async addLike(
     @Args('postId', ParseIntPipe) postId: number,
@@ -33,6 +37,7 @@ export class PostResolver {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Mutation('addPost')
   async add(@Args('postAddInput') args: PostAddInput): Promise<boolean> {
     try {
