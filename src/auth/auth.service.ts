@@ -13,20 +13,6 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async getUserFromToken(stringToken: string): Promise<User | undefined> {
-    try {
-      const token: IToken = verify(
-        stringToken,
-        process.env.JWT_SECRET,
-      ) as IToken;
-      const user = await this.userRepository.findOne(token.id);
-
-      return user;
-    } catch {
-      return undefined;
-    }
-  }
-
   async authorize(
     name: string,
     password: string,
