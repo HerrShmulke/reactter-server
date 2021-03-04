@@ -24,7 +24,7 @@ export class Post {
   mentionBy?: Post[];
 
   @ManyToMany((type) => User, (user) => user.postsLikes)
-  usersLikes: User[];
+  usersLikes?: User[];
 
   @ManyToOne((type) => User, (user) => user.ownedPosts, { nullable: false })
   @JoinTable()

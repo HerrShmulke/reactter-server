@@ -7,6 +7,7 @@ import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserModule } from './user/user.module';
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
     ConfigModule.forRoot(),
+    TokenModule,
     UserModule,
     PostModule,
     AuthModule,

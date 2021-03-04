@@ -1,60 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Response } from 'express';
-import { User } from 'src/user/user.entity';
-import { Repository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
-import { IToken } from 'src/common/interfaces/token';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
+import { UserService } from 'src/user/user.service';
+import { TokenService } from 'src/token/token.service';
+import { Token } from 'src/token/token.entity';
 
 @Injectable()
 export class AuthService {
-  /**
-   * @todo replace repository to service
-   */
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
   ) {}
 
-  /**
-   * @todo add uuid4 library
-   */
-  async setRefreshToken(response: Response) {
-    /// uuid4
-    const token: string = undefined;
-
-    /// Temp time @todo fix
-    response.cookie('refresh_token', token, { maxAge: 999e10, httpOnly: true });
-  }
-
-  async authorize(
-    name: string,
-    password: string,
-    response: Response,
-  ): Promise<boolean> {
+  async authorize(name: string, password: string): Promise<Token | undefined> {
     try {
-      const user = await this.userRepository.findOne({
-        where: {
-          name: name,
-        },
-      });
+      const user = await this.userService.findByName(name);
 
       if (user && (await argon2.verify(await user.getPassword(), password))) {
-        let token: IToken = { id: user.id };
+        const tokens = await this.tokenService.generateNewPairForUser(user);
 
-        response.cookie(
-          'token',
-          sign(token, process.env.JWT_SECRET, { expiresIn: '30m' }),
-          { maxAge: 1.8e6 },
-        );
-
-        return true;
+        return tokens;
       }
 
-      return false;
+      return undefined;
     } catch (err) {
-      console.log(err);
-      return false;
+      return undefined;
     }
   }
 }

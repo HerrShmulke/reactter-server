@@ -1,17 +1,21 @@
-import { ParseIntPipe, UseGuards } from '@nestjs/common';
+import { forwardRef, Inject, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query, Mutation, Context } from '@nestjs/graphql';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRegisterInput } from 'src/graphql';
 import { User } from './user.entity';
-import { Token } from './token.decorator';
-import { IToken } from '../common/interfaces/token';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Response } from 'express';
+import {
+  COOKIE_ACCESS_TOKEN_MAX_AGE,
+  COOKIE_REFRESH_TOKEN_MAX_AGE,
+} from 'src/common/constants';
 
 @Resolver('User')
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
+    @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
 
@@ -27,7 +31,21 @@ export class UserResolver {
     @Args('name') name: string,
     @Args('password') password: string,
   ): Promise<boolean> {
-    return this.authService.authorize(name, password, context.req.res);
+    const tokens = await this.authService.authorize(name, password);
+
+    if (!tokens) return false;
+
+    const response: Response = context.req.res;
+
+    response.cookie('access_token', tokens.accessToken, {
+      maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
+    });
+    response.cookie('refresh_token', tokens.refreshToken, {
+      maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
+      httpOnly: true,
+    });
+
+    return true;
   }
 
   @Mutation('registerUser')

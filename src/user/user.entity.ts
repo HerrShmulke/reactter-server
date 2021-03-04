@@ -1,5 +1,6 @@
 import * as argon2 from 'argon2';
 import { Post } from 'src/post/post.entity';
+import { Token } from 'src/token/token.entity';
 import {
   Column,
   Entity,
@@ -7,26 +8,31 @@ import {
   OneToMany,
   ManyToMany,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ nullable: false })
-  name: string;
+  name!: string;
 
   @OneToMany((type) => Post, (post) => post.owner)
   @JoinTable()
-  ownedPosts: Post[];
+  ownedPosts?: Post[];
 
   @ManyToMany((type) => Post)
   @JoinTable()
-  postsLikes: Post[];
+  postsLikes?: Post[];
+
+  @ManyToOne((type) => Token, (token) => token.owner)
+  @JoinTable()
+  tokens?: Token[];
 
   @Column({ name: 'password', nullable: false })
-  private _password: string;
+  private _password!: string;
 
   async setPassword(pass: string) {
     this._password = await argon2.hash(pass);

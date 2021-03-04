@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRegisterInput } from 'src/graphql';
 import { InsertResult, Repository } from 'typeorm';
+import { UserRegisterInput } from 'src/graphql';
 import { User } from './user.entity';
 
 @Injectable()
@@ -13,6 +13,14 @@ export class UserService {
   findById(id: number): Promise<User> {
     return this.userRepository.findOne(id, {
       relations: ['ownedPosts', 'postsLikes'],
+    });
+  }
+
+  findByName(name: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        name: name,
+      },
     });
   }
 

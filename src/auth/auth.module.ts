@@ -1,15 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import cookieParser from 'cookie-parser';
-import { User } from 'src/user/user.entity';
+import { forwardRef, Module } from '@nestjs/common';
+import { TokenModule } from 'src/token/token.module';
+import { UserModule } from 'src/user/user.module';
 import { AuthService } from './auth.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [forwardRef(() => UserModule), TokenModule],
   providers: [AuthService],
+  exports: [AuthService],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser);
-  }
-}
+export class AuthModule {}
