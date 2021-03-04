@@ -14,7 +14,7 @@ export class Post {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 250 })
   message!: string;
 
   @ManyToOne((type) => Post, (post) => post.mentionBy)
