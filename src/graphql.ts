@@ -33,6 +33,8 @@ export abstract class IMutation {
     abstract registerUser(userRegisterInput?: UserRegisterInput): boolean | Promise<boolean>;
 
     abstract userLogin(name?: string, password?: string): boolean | Promise<boolean>;
+
+    abstract killAllSessions(): boolean | Promise<boolean>;
 }
 
 export class Post {

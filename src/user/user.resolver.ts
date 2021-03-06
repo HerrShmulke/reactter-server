@@ -10,6 +10,8 @@ import {
   COOKIE_ACCESS_TOKEN_MAX_AGE,
   COOKIE_REFRESH_TOKEN_MAX_AGE,
 } from 'src/common/constants';
+import { TokenService } from 'src/token/token.service';
+import { Token } from 'src/token/token.decorator';
 
 @Resolver('User')
 export class UserResolver {
@@ -17,12 +19,13 @@ export class UserResolver {
     private readonly userService: UserService,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    private readonly tokenService: TokenService,
   ) {}
 
   @UseGuards(AuthGuard)
   @Query('user')
   async getUser(@Args('id', ParseIntPipe) id: number): Promise<User> {
-    return this.userService.findById(id);
+    return this.userService.findById(id, ['ownedPosts', 'postsLikes']);
   }
 
   @Mutation('userLogin')
@@ -46,6 +49,26 @@ export class UserResolver {
     });
 
     return true;
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation('killAllSessions')
+  async killAllSessions(@Token() strToken: string): Promise<boolean> {
+    try {
+      const token = this.tokenService.stringToAccessToken(strToken);
+      console.log(
+        '🚀 ~ file: user.resolver.ts ~ line 59 ~ UserResolver ~ killAllSessions ~ token',
+        token,
+      );
+      const user = await this.userService.findById(token.id);
+      console.log(
+        '🚀 ~ file: user.resolver.ts ~ line 60 ~ UserResolver ~ killAllSessions ~ user',
+        user,
+      );
+      return this.tokenService.killAllSessionsForUser(user);
+    } catch {
+      return false;
+    }
   }
 
   @Mutation('registerUser')

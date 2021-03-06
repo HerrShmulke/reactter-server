@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IToken } from 'src/common/interfaces/token';
-import { DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
 import { v4 as uuid4 } from 'uuid';
 import { Token } from './token.entity';
@@ -97,7 +97,9 @@ export class TokenService {
 
     if (!tokens) return;
 
-    const newToken: IToken = { id: tokens.id };
+    const newToken: IToken = {
+      id: (jwt.decode(tokens.accessToken) as IToken).id,
+    };
 
     tokens.refreshToken = uuid4();
     tokens.accessToken = jwt.sign(newToken, process.env.JWT_SECRET, {
@@ -107,7 +109,16 @@ export class TokenService {
     return this.tokenRepository.save(tokens);
   }
 
-  killSession(tokens: Token): Promise<DeleteResult> {
-    return this.tokenRepository.delete(tokens.id);
+  killSession(tokens: Token) {
+    this.tokenRepository.delete(tokens.id);
+  }
+
+  async killAllSessionsForUser(user: User): Promise<boolean> {
+    try {
+      await this.tokenRepository.delete({ owner: user });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
