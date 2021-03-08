@@ -28,6 +28,7 @@ export class UserService {
   async create(user: UserRegisterInput): Promise<InsertResult> {
     const newUser = this.userRepository.create();
     newUser.name = user.name;
+    newUser.avatarUrl = '/avatar.png';
 
     await newUser.setPassword(user.password);
 

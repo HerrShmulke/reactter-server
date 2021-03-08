@@ -1,11 +1,11 @@
 type Query {
-  user(id: ID!): User
+  user: User
 }
 
 type Mutation {
-  registerUser(userRegisterInput: UserRegisterInput): Boolean
-  userLogin(name: String, password: String): Boolean
-  killAllSessions: Boolean
+  userRegister(input: UserRegisterInput!): Boolean!
+  userLogin(input: UserLoginInput!): Boolean!
+  killAllSessions: Boolean!
 }
 
 type User {
@@ -15,6 +15,11 @@ type User {
 }
 
 input UserRegisterInput {
+  name: String!
+  password: String!
+}
+
+input UserLoginInput {
   name: String!
   password: String!
 }

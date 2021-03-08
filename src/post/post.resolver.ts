@@ -1,23 +1,32 @@
 import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { PostAddInput } from 'src/graphql';
+import { IToken } from 'src/common/interfaces/token';
+import { PostCreateInput, PostAddLikeInput } from 'src/graphql';
+import { Token } from 'src/token/token.decorator';
+import { TokenService } from 'src/token/token.service';
 import { Post } from './post.entity';
+import { Post as GraphPost } from 'src/graphql';
 import { PostService } from './post.service';
 
 @Resolver('Post')
 export class PostResolver {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly tokenSerice: TokenService,
+  ) {}
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Query('posts')
   async getPosts(): Promise<Post[]> {
-    return this.postService.findAll([
+    const posts = await this.postService.findAll([
       'owner',
       'mention',
       'mentionBy',
-      'postsLikes',
+      'usersLikes',
     ]);
+
+    return posts;
   }
 
   @UseGuards(AuthGuard)
@@ -27,20 +36,17 @@ export class PostResolver {
       'owner',
       'mention',
       'mentionBy',
-      'postsLikes',
+      'usersLikes',
     ]);
 
     return post;
   }
 
   @UseGuards(AuthGuard)
-  @Mutation('addLike')
-  async addLike(
-    @Args('postId', ParseIntPipe) postId: number,
-    @Args('userId', ParseIntPipe) userId: number,
-  ): Promise<boolean> {
+  @Mutation('postAddLike')
+  async addLike(@Args('input') input: PostAddLikeInput): Promise<boolean> {
     try {
-      await this.postService.addLike(userId, postId);
+      await this.postService.addLike(input.userId, input.postId);
       return true;
     } catch (error) {
       return false;
@@ -48,10 +54,14 @@ export class PostResolver {
   }
 
   @UseGuards(AuthGuard)
-  @Mutation('addPost')
-  async add(@Args('postAddInput') args: PostAddInput): Promise<boolean> {
+  @Mutation('postCreate')
+  async create(
+    @Args('input') args: PostCreateInput,
+    @Token() strToken: string,
+  ): Promise<boolean> {
     try {
-      await this.postService.add(args);
+      const token: IToken = this.tokenSerice.stringToAccessToken(strToken);
+      await this.postService.create(args, token.id);
       return true;
     } catch (error) {
       return false;

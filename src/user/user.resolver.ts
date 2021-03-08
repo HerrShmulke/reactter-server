@@ -1,7 +1,7 @@
 import { forwardRef, Inject, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query, Mutation, Context } from '@nestjs/graphql';
 import { AuthService } from 'src/auth/auth.service';
-import { UserRegisterInput } from 'src/graphql';
+import { UserLoginInput, UserRegisterInput } from 'src/graphql';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -12,6 +12,7 @@ import {
 } from 'src/common/constants';
 import { TokenService } from 'src/token/token.service';
 import { Token } from 'src/token/token.decorator';
+import { IToken } from 'src/common/interfaces/token';
 
 @Resolver('User')
 export class UserResolver {
@@ -24,17 +25,21 @@ export class UserResolver {
 
   @UseGuards(AuthGuard)
   @Query('user')
-  async getUser(@Args('id', ParseIntPipe) id: number): Promise<User> {
-    return this.userService.findById(id, ['ownedPosts', 'postsLikes']);
+  async getUser(@Token() strToken): Promise<User> {
+    const accessToken: IToken = this.tokenService.stringToAccessToken(strToken);
+
+    return this.userService.findById(accessToken.id, [
+      'ownedPosts',
+      'postsLikes',
+    ]);
   }
 
   @Mutation('userLogin')
   async authorize(
     @Context() context: any,
-    @Args('name') name: string,
-    @Args('password') password: string,
+    @Args('name') input: UserLoginInput,
   ): Promise<boolean> {
-    const tokens = await this.authService.authorize(name, password);
+    const tokens = await this.authService.authorize(input.name, input.password);
 
     if (!tokens) return false;
 
@@ -56,25 +61,16 @@ export class UserResolver {
   async killAllSessions(@Token() strToken: string): Promise<boolean> {
     try {
       const token = this.tokenService.stringToAccessToken(strToken);
-      console.log(
-        '🚀 ~ file: user.resolver.ts ~ line 59 ~ UserResolver ~ killAllSessions ~ token',
-        token,
-      );
       const user = await this.userService.findById(token.id);
-      console.log(
-        '🚀 ~ file: user.resolver.ts ~ line 60 ~ UserResolver ~ killAllSessions ~ user',
-        user,
-      );
+
       return this.tokenService.killAllSessionsForUser(user);
     } catch {
       return false;
     }
   }
 
-  @Mutation('registerUser')
-  async createUser(
-    @Args('userRegisterInput') args: UserRegisterInput,
-  ): Promise<boolean> {
+  @Mutation('userRegister')
+  async createUser(@Args('input') args: UserRegisterInput): Promise<boolean> {
     try {
       await this.userService.create(args);
       return true;

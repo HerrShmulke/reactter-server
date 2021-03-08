@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostAddInput } from 'src/graphql';
+import { PostCreateInput } from 'src/graphql';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { Post } from './post.entity';
@@ -34,11 +34,11 @@ export class PostService {
     this.userRepository.save(owner);
   }
 
-  async add(post: PostAddInput): Promise<Post> {
+  async create(post: PostCreateInput, ownerId: number): Promise<Post> {
     const newPost: Post = this.postRepository.create();
 
     newPost.message = post.message;
-    newPost.owner = await this.userRepository.findOne(post.ownerId);
+    newPost.owner = await this.userRepository.findOne(ownerId);
 
     if (post.mention)
       newPost.mention = await this.postRepository.findOne(post.mention);

@@ -8,7 +8,6 @@ import {
   OneToMany,
   ManyToMany,
   PrimaryGeneratedColumn,
-  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -19,6 +18,9 @@ export class User {
   @Column({ nullable: false })
   name!: string;
 
+  @Column({ nullable: false })
+  avatarUrl!: string;
+
   @OneToMany((type) => Post, (post) => post.owner)
   @JoinTable()
   ownedPosts?: Post[];
@@ -27,7 +29,7 @@ export class User {
   @JoinTable()
   postsLikes?: Post[];
 
-  @ManyToOne((type) => Token, (token) => token.owner)
+  @OneToMany((type) => Token, (token) => token.owner)
   @JoinTable()
   tokens?: Token[];
 
