@@ -37,7 +37,7 @@ export class UserResolver {
   @Mutation('userLogin')
   async authorize(
     @Context() context: any,
-    @Args('name') input: UserLoginInput,
+    @Args('input') input: UserLoginInput,
   ): Promise<boolean> {
     const tokens = await this.authService.authorize(input.name, input.password);
 
