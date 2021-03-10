@@ -20,7 +20,8 @@ export class String250Scalar implements CustomScalar<string, string> {
   }
 
   parseLiteral(value: ValueNode): string {
-    if (value.kind === Kind.STRING) {
+    if (value.kind === Kind.INT) {
+      return value.value.toString();
     }
 
     return null;
