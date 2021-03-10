@@ -16,7 +16,7 @@ export class PostResolver {
     private readonly tokenSerice: TokenService,
   ) {}
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Query('posts')
   async getPosts(): Promise<Post[]> {
     const posts = await this.postService.findAll([
